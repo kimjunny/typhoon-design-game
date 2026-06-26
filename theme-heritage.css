@@ -1,0 +1,383 @@
+/*
+ * Heritage 테마 — Architectural Minimalism + Journalistic Gravitas
+ * 적용: typhoon-game.css 뒤에 이 파일 <link> 한 줄만 추가.
+ * 되돌리기: HTML에서 이 <link> 한 줄만 제거하면 기존 다크 테마로 복귀.
+ */
+@import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+:root {
+  --bg-deep: #F7F5F2;
+  --bg-blue: #F0EDE7;
+  --panel: #FFFFFF;
+  --panel-strong: #FFFFFF;
+  --line: rgba(108, 114, 120, 0.22);
+  --text: #1A1C1E;
+  --muted: #6C7278;
+  --accent: #B8422E;
+  --accent-2: #B8422E;
+  --warm: #B8422E;
+  --warm-strong: #B8422E;
+  --cool: #6C7278;
+  --cool-strong: #6C7278;
+  --danger: #B8422E;
+  --safe: #6C7278;
+  --shadow: 0 16px 40px rgba(26, 28, 30, 0.08);
+
+  /* 캔버스(바람 지도) 팔레트 — 페이퍼 위 잉크 톤 */
+  --map-ocean-top: #EFEDE7;
+  --map-ocean-bottom: #E3E0D7;
+  --map-land: #DCD6C8;
+  --map-coast: rgba(26, 28, 30, 0.55);
+  --map-grid: rgba(108, 114, 120, 0.16);
+  --map-marker: #B8422E;
+  --wind-low: 170, 174, 178;
+  --wind-mid: 108, 114, 120;
+  --wind-high: 184, 66, 46;
+
+  font-family: "Public Sans", system-ui, -apple-system, "Noto Sans KR", sans-serif;
+}
+
+body {
+  color: var(--text);
+  font-family: "Public Sans", system-ui, -apple-system, "Noto Sans KR", sans-serif;
+  background:
+    radial-gradient(circle at 16% 12%, rgba(184, 66, 46, 0.05), transparent 30rem),
+    linear-gradient(160deg, #F7F5F2 0%, #F1EEE8 100%);
+}
+
+body::before {
+  background-image:
+    linear-gradient(rgba(26, 28, 30, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(26, 28, 30, 0.035) 1px, transparent 1px);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent 78%);
+}
+
+/* 패널 — 매트한 카드, 슬레이트 보더, 작은 라운드, 절제된 그림자 */
+.hero__copy,
+.hero__visual,
+.factor-panel,
+.live-panel,
+.result-card,
+.learning-note,
+.storm-3d-section {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #FFFFFF;
+  box-shadow: var(--shadow);
+  backdrop-filter: none;
+}
+
+.hero__copy::after {
+  background: radial-gradient(circle, rgba(184, 66, 46, 0.06), transparent 70%);
+}
+
+/* 타이포 */
+h1,
+h2 {
+  color: var(--text);
+  font-family: "Public Sans", system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+h1 {
+  font-weight: 900;
+  line-height: 1.02;
+  word-break: keep-all;
+}
+
+.hero__lead,
+.section-heading p,
+.result-card p,
+.learning-note p {
+  color: var(--muted);
+}
+
+/* 라벨 캡스 — Space Grotesk */
+.eyebrow,
+.panel-kicker {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  color: var(--accent);
+  background: transparent;
+  font-family: "Space Grotesk", "Public Sans", sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+}
+
+/* 버튼 — 클레이가 유일한 인터랙션 색 */
+.primary-action,
+.secondary-action {
+  border-radius: 8px;
+  font-family: "Public Sans", sans-serif;
+}
+
+.primary-action {
+  color: var(--neutral, #F7F5F2);
+  background: var(--accent);
+}
+
+.secondary-action {
+  border: 1px solid var(--line);
+  color: var(--text);
+  background: transparent;
+}
+
+.primary-action:hover,
+.secondary-action:hover,
+.factor-button:hover {
+  filter: none;
+  transform: translateY(-1px);
+}
+
+.primary-action:focus-visible,
+.secondary-action:focus-visible,
+.factor-button:focus-visible,
+.source-links a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* 환경 카드 */
+.factor-button {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--text);
+  background: #FFFFFF;
+}
+
+.factor-button[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: rgba(184, 66, 46, 0.06);
+}
+
+.factor-icon {
+  border-radius: 4px;
+  background: rgba(108, 114, 120, 0.10);
+}
+
+.factor-text small,
+.factor-status {
+  color: var(--muted);
+}
+
+.factor-status {
+  border-radius: 999px;
+  background: rgba(108, 114, 120, 0.12);
+}
+
+.factor-button[aria-pressed="true"] .factor-status {
+  color: #F7F5F2;
+  background: var(--accent);
+}
+
+/* 지표 카드 / 미터 */
+.metric-card,
+.result-grid div,
+.risk-list li {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #FFFFFF;
+}
+
+.metric-card--score {
+  background: rgba(184, 66, 46, 0.05);
+}
+
+.storm-readout span,
+.storm-readout em,
+.metric-card span,
+.result-grid span,
+.metric-card small,
+.risk-list li {
+  color: var(--muted);
+}
+
+.risk-list strong {
+  color: var(--text);
+}
+
+.meter {
+  background: rgba(108, 114, 120, 0.16);
+}
+
+.meter i,
+.meter--danger i {
+  background: var(--accent);
+}
+
+/* 한반도 도식 SVG */
+.korea-map {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(108, 114, 120, 0.05);
+}
+
+.sea-grid {
+  stroke: rgba(108, 114, 120, 0.32);
+}
+
+.korea-shape,
+.jeju-shape {
+  fill: rgba(108, 114, 120, 0.14);
+  stroke: rgba(26, 28, 30, 0.45);
+}
+
+.track-line {
+  stroke: var(--accent);
+}
+
+.track-dot {
+  fill: var(--muted);
+  filter: none;
+}
+
+.track-dot--three {
+  fill: var(--accent);
+}
+
+.map-label {
+  fill: var(--text);
+}
+
+/* 분석 / 결과 박스 */
+.analysis-box {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  background: rgba(108, 114, 120, 0.05);
+}
+
+.answer-review {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(184, 66, 46, 0.05);
+}
+
+.answer-review li {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: #FFFFFF;
+}
+
+/* 바람 지도 스테이지 — 페이퍼 톤 */
+.storm-3d-stage {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #EFEDE7;
+  box-shadow: inset 0 0 40px rgba(26, 28, 30, 0.05);
+}
+
+.storm-3d-stage canvas {
+  border-radius: 8px;
+}
+
+.storm-3d-overlay,
+.storm-3d-legend,
+.storm-3d-hint {
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(6px);
+  color: var(--text);
+}
+
+.storm-3d-overlay span,
+.storm-3d-legend > span,
+.storm-3d-legend .legend-scale,
+.storm-3d-hint {
+  color: var(--muted);
+}
+
+.storm-3d-overlay strong {
+  color: var(--text);
+}
+
+.storm-3d-legend .legend-bar {
+  background: linear-gradient(90deg, rgb(170, 174, 178), rgb(108, 114, 120), rgb(184, 66, 46));
+}
+
+.storm-3d-overlay,
+.storm-3d-legend {
+  border-radius: 8px;
+}
+
+/* 학습 노트 / 근거 링크 */
+.source-links a {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--accent);
+  background: transparent;
+}
+
+/* 히어로 시각화(상단 태풍 오브) — 잉크/클레이 톤 */
+.storm-stage {
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.9), transparent 18%),
+    radial-gradient(circle at 50% 50%, rgba(184, 66, 46, 0.06), transparent 48%),
+    linear-gradient(155deg, #F4F1EB, #E9E5DC);
+}
+
+.storm-stage::before {
+  border: 1px solid rgba(26, 28, 30, 0.1);
+  border-radius: 6px;
+}
+
+.orbit {
+  border: 1px solid rgba(184, 66, 46, var(--wind-alpha));
+  box-shadow: inset 0 0 24px rgba(184, 66, 46, 0.05), 0 0 22px rgba(108, 114, 120, 0.05);
+}
+
+.rain {
+  background: repeating-conic-gradient(from 20deg, transparent 0deg 17deg, rgba(26, 28, 30, 0.28) 18deg 19deg, transparent 20deg 32deg);
+}
+
+.storm-core {
+  background:
+    radial-gradient(circle at center, #F7F5F2 0 12%, transparent 13%),
+    conic-gradient(from 40deg, #1A1C1E, rgba(108, 114, 120, 0.4), #1A1C1E, rgba(184, 66, 46, 0.7), #1A1C1E);
+  box-shadow:
+    0 0 calc(20px + var(--power) / 4) rgba(184, 66, 46, 0.22),
+    0 0 calc(40px + var(--power) / 3) rgba(108, 114, 120, 0.12);
+}
+
+.band {
+  background: linear-gradient(90deg, transparent, rgba(26, 28, 30, 0.55), transparent);
+}
+
+.eye {
+  background: #1A1C1E;
+  box-shadow: 0 0 0 5px rgba(26, 28, 30, 0.12), inset 0 0 8px rgba(184, 66, 46, 0.5);
+}
+
+.storm-readout {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: var(--shadow);
+}
+
+/* 인터랙티브 풀이 — Heritage 보정 */
+.learn-item {
+  background: #FFFFFF;
+}
+
+.learn-step,
+.learn-formula {
+  background: rgba(108, 114, 120, 0.06);
+}
+
+.learn-summary {
+  background: rgba(184, 66, 46, 0.05);
+}
+
+.learn-tag.is-up,
+.learn-chip.is-up {
+  color: var(--accent);
+  background: rgba(184, 66, 46, 0.10);
+}
+
+.learn-tag.is-down,
+.learn-chip.is-down {
+  color: var(--muted);
+  background: rgba(108, 114, 120, 0.12);
+}

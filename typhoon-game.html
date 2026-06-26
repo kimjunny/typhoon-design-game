@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ENSO 탐험실 | 태풍 설계 게임</title>
+  <meta name="description" content="태풍의 강화·약화 요인을 클릭해 태풍 위력과 대한민국 피해 점수를 학습하는 교육용 웹 게임" />
+  <link rel="stylesheet" href="./typhoon-game.css" />
+  <!-- Heritage 테마: 이 줄만 지우면 기존 다크 테마로 복귀 -->
+  <link rel="stylesheet" href="./theme-heritage.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero__copy">
+        <p class="eyebrow">ENSO 탐험실 · G002 Simulator Module</p>
+        <h1 id="page-title">태풍 설계 게임</h1>
+        <p class="hero__lead">
+          태풍 환경 카드를 고른 뒤 결과 시뮬레이션을 실행하세요.<br />
+          선택지만으로는 예측을 공개하지 않고,<br />
+          버튼을 눌렀을 때 대한민국 피해도와 정답 풀이를 확인합니다.
+        </p>
+      </div>
+
+      <aside class="hero__visual" aria-label="현재 태풍 상태 시각화">
+        <div class="storm-stage" id="stormStage">
+          <div class="orbit orbit--outer"></div>
+          <div class="orbit orbit--middle"></div>
+          <div class="orbit orbit--inner"></div>
+          <div class="rain rain--a"></div>
+          <div class="rain rain--b"></div>
+          <div class="storm-core" aria-hidden="true">
+            <span class="band band--one"></span>
+            <span class="band band--two"></span>
+            <span class="band band--three"></span>
+            <span class="eye"></span>
+          </div>
+          <div class="storm-readout">
+            <span>시뮬레이션</span>
+            <strong id="powerValue">--</strong>
+            <em id="powerLabel">대기 중</em>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="dashboard" aria-label="태풍 요인 선택과 결과 시뮬레이션">
+      <article class="factor-panel factor-panel--quiz">
+        <div class="section-heading">
+          <span class="panel-kicker">환경 카드 퀴즈</span>
+          <h2>피해를 줄일 조건을 골라보세요</h2>
+          <p>각 카드가 태풍을 키울지 약하게 만들지는 먼저 알려주지 않습니다.<br />카드를 고른 뒤 옆 패널에서 결과를 실행하세요.</p>
+        </div>
+        <div class="factor-grid" id="quizList" aria-label="태풍 환경 조건 퀴즈 선택지"></div>
+      </article>
+
+      <article class="live-panel" aria-live="polite">
+        <div class="section-heading">
+          <span class="panel-kicker">결과 패널</span>
+          <h2>선택 후 시뮬레이션</h2>
+          <p>카드 선택만으로는 예측을 갱신하지 않습니다. 버튼을 누르면 선택 조합의 피해도와 풀이가 표시됩니다.</p>
+        </div>
+        <div class="simulation-actions" aria-label="시뮬레이션 조작">
+          <button class="primary-action" id="simulateButton" type="button">결과 시뮬레이션</button>
+          <button class="secondary-action" id="resetButton" type="button">초기화</button>
+        </div>
+
+        <div class="metric-stack">
+          <div class="metric-card">
+            <span>태풍 위력 지수</span>
+            <strong id="intensityMetric">시뮬레이션 전</strong>
+            <div class="meter"><i id="intensityMeter"></i></div>
+          </div>
+          <div class="metric-card">
+            <span>대한민국 피해도</span>
+            <strong id="damageMetric">시뮬레이션 전</strong>
+            <div class="meter meter--danger"><i id="damageMeter"></i></div>
+          </div>
+          <div class="metric-card metric-card--score">
+            <span>학습 점수</span>
+            <strong id="scoreMetric">--점</strong>
+            <small>선택 후 시뮬레이션을 실행하면 표시됩니다.</small>
+          </div>
+        </div>
+
+        <div class="korea-map" aria-label="대한민국 영향 경로 도식">
+          <svg viewBox="0 0 420 300" role="img" aria-labelledby="mapTitle mapDesc">
+            <title id="mapTitle">대한민국 주변 태풍 영향 도식</title>
+            <desc id="mapDesc">남쪽 해상에서 접근하는 태풍 경로와 한반도 영향권을 단순화해 표시합니다.</desc>
+            <defs>
+              <radialGradient id="impactGradient" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="rgba(255,255,255,.95)" />
+                <stop offset="50%" stop-color="rgba(95,188,255,.38)" />
+                <stop offset="100%" stop-color="rgba(255,98,98,.25)" />
+              </radialGradient>
+            </defs>
+            <path class="sea-grid" d="M20 240 C90 210 125 245 190 210 S300 205 390 238" />
+            <path class="korea-shape" d="M238 43 C270 50 286 78 279 106 C296 128 288 157 267 170 C271 194 251 215 226 210 C202 226 179 211 180 186 C158 170 163 142 182 129 C174 107 188 82 210 78 C212 58 224 47 238 43 Z" />
+            <path class="jeju-shape" d="M155 235 C176 223 207 226 221 239 C203 253 172 255 155 235 Z" />
+            <path class="track-line" d="M70 270 C105 236 139 216 170 193 C205 167 224 134 240 94" />
+            <circle class="impact-ring" id="impactRing" cx="205" cy="166" r="74" />
+            <circle class="track-dot track-dot--one" cx="70" cy="270" r="5" />
+            <circle class="track-dot track-dot--two" cx="170" cy="193" r="6" />
+            <circle class="track-dot track-dot--three" cx="240" cy="94" r="7" />
+            <text class="map-label" x="248" y="90">서울</text>
+            <text class="map-label" x="250" y="176">부산</text>
+            <text class="map-label" x="175" y="264">제주</text>
+          </svg>
+        </div>
+
+        <div class="analysis-box" id="analysisBox">
+          카드를 선택한 뒤 결과 시뮬레이션을 실행하세요. 선택 중에는 예측 수치를 공개하지 않습니다.
+        </div>
+      </article>
+    </section>
+
+    <section class="result-screen" id="resultScreen" tabindex="-1" hidden>
+      <div class="storm-3d-section" aria-label="선택 결과 바람 흐름 시각화">
+        <div class="storm-3d-copy">
+          <span class="panel-kicker">선택의 결과</span>
+          <h2 id="storm3dTitle">시뮬레이션 대기 중</h2>
+          <p id="storm3dSummary">카드를 고르고 결과 시뮬레이션을 실행하면 실제 바람 흐름 지도에 한반도 주변 태풍이 표시됩니다.</p>
+        </div>
+        <div class="storm-3d-stage">
+          <canvas id="storm3dCanvas" aria-label="실제 바람 흐름과 태풍 장면"></canvas>
+          <div class="storm-3d-overlay">
+            <span>대한민국 피해도</span>
+            <strong id="storm3dImpact">--</strong>
+          </div>
+          <div class="storm-3d-hint" aria-hidden="true">드래그 이동 · 휠 확대</div>
+          <div class="storm-3d-legend" aria-hidden="true">
+            <span>바람 세기</span>
+            <div class="legend-bar"></div>
+            <div class="legend-scale"><em>약</em><em>강</em></div>
+          </div>
+        </div>
+      </div>
+      <div class="result-card">
+        <span class="panel-kicker">최종 결과</span>
+        <h2 id="resultTitle">대한민국 피해도: 보통</h2>
+        <p id="resultSummary">현재 선택 조합으로 계산한 교육용 결과가 표시됩니다.</p>
+        <div class="result-grid">
+          <div>
+            <span>최종 점수</span>
+            <strong id="resultScore">622점</strong>
+          </div>
+          <div>
+            <span>최종 위력</span>
+            <strong id="resultPower">48 / 100</strong>
+          </div>
+          <div>
+            <span>피해도</span>
+            <strong id="resultDamage">41 / 100</strong>
+          </div>
+        </div>
+        <ul class="risk-list" id="riskList" aria-label="세부 위험 요소"></ul>
+        <div class="answer-review" id="answerReview" aria-label="선택한 환경 카드 풀이"></div>
+      </div>
+    </section>
+
+    <section class="learning-note" aria-labelledby="source-title">
+      <div>
+        <span class="panel-kicker">학습 기준</span>
+        <h2 id="source-title">왜 이런 요인이 들어가나요?</h2>
+      </div>
+      <p>
+        이 모듈은 따뜻한 해수, 습윤한 공기, 낮은 연직 시어가 태풍 발달에 유리하고 강한 연직 시어·육지 마찰·건조 공기·차가운 해수가 약화에 기여한다는
+        공공 기상교육 자료를 바탕으로 만든 단순화된 학습 게임입니다.
+      </p>
+      <nav class="source-links" aria-label="근거 자료 링크">
+        <a href="https://www.noaa.gov/jetstream/tropical/tropical-cyclone-introduction" target="_blank" rel="noreferrer">NOAA JetStream</a>
+        <a href="https://www.aoml.noaa.gov/impact-of-wind-shear-on-tropical-cyclone-intensity/" target="_blank" rel="noreferrer">NOAA/AOML Wind Shear</a>
+        <a href="https://www.weather.gov/source/zhu/ZHU_Training_Page/tropical_stuff/hurricane_anatomy/hurricane_anatomy.html" target="_blank" rel="noreferrer">NWS Hurricane Facts</a>
+        <a href="https://www.kma.go.kr/neng/forecast/warning.do" target="_blank" rel="noreferrer">KMA Warning Criteria</a>
+      </nav>
+    </section>
+  </main>
+
+  <script src="./typhoon-game.js" defer></script>
+</body>
+</html>
